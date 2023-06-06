@@ -11,20 +11,22 @@ import java.time.LocalDateTime;
  * @create 2023-03-18 12:01
  */
 @Data
-public class Submit {
-    private Long submitId;
+public class AssignSubmit {
+    private Long assignSubmitId;
 
     private Long assignId;
 
-    private Long studentId;
-
-    private String filename;
+    private Long uuid;
 
     private byte[] content;
 
+    private String filename;
+
+    private float score;
+
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
-    
+
     @TableField(fill = FieldFill.UPDATE)
     private LocalDateTime lastModifiedTime;
 }

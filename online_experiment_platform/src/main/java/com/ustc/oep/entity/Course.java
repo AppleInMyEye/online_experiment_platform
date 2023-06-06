@@ -11,13 +11,13 @@ import java.time.LocalDateTime;
  * @create 2023-03-17 9:41
  */
 @Data
-public class CourseEntity {
-    private Integer courseId ;
+public class Course {
+    private Long courseId ;
     /** 姓名 */
     private String courseName ;
     /** 创建时间 */
     @TableField(fill = FieldFill.INSERT)
-    private LocalDateTime creatTime ;
+    private LocalDateTime createTime ;
     /** 课程开始时间 */
     private LocalDateTime startTime ;
     /** 课程结束时间 */

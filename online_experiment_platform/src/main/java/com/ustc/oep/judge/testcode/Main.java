@@ -1,3 +1,5 @@
+package com.ustc.oep.judge.testcode;
+
 import java.util.Scanner;
 
 public class Main {

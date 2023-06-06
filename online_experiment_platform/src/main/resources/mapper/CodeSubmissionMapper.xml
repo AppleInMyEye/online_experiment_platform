@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ustc.oep.mapper.CodeSubmissionMapper">
+    <select id="getSubmitNum" resultType="java.lang.Integer">
+        select count(*) from code_submission where user_id = #{userId} and problem_id = #{problemId}
+    </select>
+</mapper>

@@ -1,10 +1,90 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
   <meta charset="UTF-8">
-  <title>$Title$</title>
+  <title>Teacher Screen Sharing</title>
+  <style>
+    video {
+      width: 50%;
+      height: auto;
+      margin: 0 auto;
+      display: block;
+    }
+  </style>
 </head>
 <body>
-$END$
+<h1>Teacher Screen Sharing</h1>
+<video id="remote-video" autoplay></video>
+<button onclick="startScreenSharing()">Start Screen Sharing</button>
+<button onclick="stopScreenSharing()">Stop Screen Sharing</button>
+<script>
+  var ws;
+  var pc;
+
+  function start() {
+    // 创建WebSocket连接
+    ws = new WebSocket('ws://localhost:8080/screen-sharing/123');
+    alert("WebSocket connection established");
+    // 监听WebSocket消息
+    ws.onmessage = function(event) {
+      const data = JSON.parse(event.data);
+      if (data.type === 'offer') {
+        // 收到offer消息，创建PeerConnection并设置远程描述
+        pc = new RTCPeerConnection();
+        pc.setRemoteDescription(new RTCSessionDescription(data.offer))
+                .then(() => {
+                  // 添加candidate并发送answer消息到媒体服务器
+                  pc.addIceCandidate(data.candidate);
+                  pc.createAnswer()
+                          .then((answer) => {
+                            pc.setLocalDescription(answer);
+                            ws.send(JSON.stringify({
+                              type: 'answer',
+                              answer: answer,
+                              candidate: pc.localDescription
+                            }));
+                          })
+                          .catch((error) => {
+                            console.log(error);
+                          });
+                })
+                .catch((error) => {
+                  console.log(error);
+                });
+
+        // 监听ICE candidate事件
+        pc.onicecandidate = function(event) {
+          if (event.candidate) {
+            // 发送ICE candidate到媒体服务器
+            ws.send(JSON.stringify({
+              type: 'candidate',
+              candidate: event.candidate
+            }));
+          }
+        };
+
+        // 将远程流添加到视频元素中
+        pc.ontrack = function(event) {
+          const video = document.getElementById('remote-video');
+          video.srcObject = event.streams[0];
+          video.play();
+        };
+      }
+      else if (data.type === 'candidate') {
+        // 收到ICE candidate消息，添加到PeerConnection中
+        pc.addIceCandidate(data.candidate);
+      }
+    };
+  }
+
+  function startScreenSharing() {
+    start();
+  }
+
+  function stop() {
+    pc.close();
+    ws.close();
+  }
+</script>
 </body>
 </html>
