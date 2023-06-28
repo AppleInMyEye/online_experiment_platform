@@ -1,7 +1,9 @@
 package com.ustc.oep.entity;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -12,9 +14,12 @@ import java.time.LocalDateTime;
  */
 @Data
 public class Course {
+    @TableId(type = IdType.AUTO)
     private Long courseId ;
     /** 姓名 */
     private String courseName ;
+    /** 课程描述 */
+    private String courseDesc ;
     /** 创建时间 */
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime ;
@@ -26,7 +31,11 @@ public class Course {
     @TableField(fill = FieldFill.UPDATE)
     private LocalDateTime lastModifiedTime ;
     /** 教师id */
-    private Integer teacherId1 ;
+    private Integer teacherId ;
+    /** 教师姓名 */
+    private String teacherName ;
     /** 教师id */
     private Integer teacherId2 ;
+    // 课程状态 0 存在 1 删除
+    private Integer status ;
 }

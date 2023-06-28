@@ -1,0 +1,11 @@
+{
+  "groups": [
+    {
+      "name": "judge-server",
+      "type": "com.ustc.oep.config.JudgeServerConfig",
+      "sourceType": "com.ustc.oep.config.JudgeServerConfig"
+    }
+  ],
+  "properties": [],
+  "hints": []
+}

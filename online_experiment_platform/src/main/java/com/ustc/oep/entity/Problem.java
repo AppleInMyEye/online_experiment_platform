@@ -2,7 +2,9 @@ package com.ustc.oep.entity;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,7 +21,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Problem implements Serializable {
-
+    @TableId(type = IdType.AUTO)
     private Integer problemId;
 
     private String title;
@@ -37,6 +39,11 @@ public class Problem implements Serializable {
     private String sampleOutput;
 
     private Integer testPointNum;
+
+    private Integer acceptNum;
+
+    //热门程度
+    private Integer hotDegree;
 
     //数据库中存储为Text类型，但是在Java中使用List<String>类型
     @JSONField(serialize = false)

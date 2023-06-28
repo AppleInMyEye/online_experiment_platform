@@ -29,14 +29,15 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
         //查询用户信息
         LambdaQueryWrapper<UserInfo> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(UserInfo::getEmailAddress, s);
+        queryWrapper.eq(UserInfo::getUsername, s);
         UserInfo user = userInfoMapper.selectOne(queryWrapper);
         //如果用户不存在，抛出异常
         if(Objects.isNull(user)){
             throw new UsernameNotFoundException("用户名或密码错误");
         }
         //查询对应的权限信息
-        List<String> list = menuMapper.selectMenuPermsByUserId(user.getUuid());
+//        List<String> list = menuMapper.selectMenuPermsByUserId(user.getUuid());
+        List<String> list = new ArrayList<>(Arrays.asList("admin"));
         return new LoginUser(user,list);
     }
 }

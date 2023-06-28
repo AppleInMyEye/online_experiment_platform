@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>WebRTC Example</title>
+  <style>
+    video {
+      width: 50%;
+      height: auto;
+      margin: 0 auto;
+      display: block;
+    }
+
+  </style>
+  <script>
+    // 将 FileReader 对象声明为全局变量
+    window.FileReader = FileReader;
+  </script>
+</head>
+<body>
+<h1>WebRTC Example</h1>
+<video id="local-video" autoplay></video>
+<br>
+<button id="start-btn" onclick="start()">Start Sharing Screen</button>
+<button id="stop-btn" onclick="stop()">Stop Sharing Screen</button>
+
+<script>
+
+  let localStream;
+  let ws;
+  let recorder;
+  ws = new WebSocket('ws://localhost:8080/ws');
+  async  function start() {
+    // 创建WebSocket连接
+
+
+    //使用 navigator.mediaDevices.getUserMedia 方法获取屏幕媒体流
+    const mediaStream = await navigator.mediaDevices.getDisplayMedia({
+      video: {
+        width: 500,
+        height: 300,
+        frameRate: 20
+      },
+      audio: true
+    });
+    document.getElementById('local-video').srcObject = mediaStream;
+    //将媒体流转换为 Blob 对象
+    recorder =  new MediaRecorder(mediaStream, {mimeType: 'video/webm'});
+
+    const chunks = [];
+    recorder.ondataavailable = (event) => {
+      chunks.push(event.data);
+    };
+    recorder.start(100);
+
+    // 录制过程中将媒体流转换为 Blob 对象
+    recorder.onstop = () => {
+      alert('录制结束')
+      const blob = new Blob(chunks, {type: 'video/webm'});
+      sendMediaStream(blob);
+    };
+  }
+
+  function sendMediaStream(blob) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const arrayBuffer = reader.result;
+      ws.send(arrayBuffer);
+      alert(arrayBuffer.byteLength + ' bytes sent');
+    };
+    reader.readAsArrayBuffer(blob);
+  }
+
+  function stop() {
+    recorder.stop();
+    document.getElementById('local-video').srcObject = null;
+  }
+</script>
+</body>
+</html>

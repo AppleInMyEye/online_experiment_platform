@@ -27,12 +27,12 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
 //        converters.add(0,messageConverter);
 //    }
 
-    @Override
-    protected void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-                .allowedHeaders("*")//允许任何头
-                .allowedMethods("*")//允许任何方法（post、get等）
-                .allowedOrigins("http://localhost:3000")//允许http://localhost:3000域名访问
-                .allowCredentials(true);//允许携带cookie
-    }
+//    @Override
+//    protected void addCorsMappings(CorsRegistry registry) {
+//        registry.addMapping("/**")
+//                .allowedHeaders("*")//允许任何头
+//                .allowedMethods("*")//允许任何方法（post、get等）
+//                .allowedOrigins("http://localhost:8080","http://localhost:9090")//允许http://localhost:8080域名访问
+//                .allowCredentials(true);//允许携带cookie
+//    }
 }

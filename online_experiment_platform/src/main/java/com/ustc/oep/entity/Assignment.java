@@ -1,7 +1,9 @@
 package com.ustc.oep.entity;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -12,6 +14,7 @@ import java.time.LocalDateTime;
  */
 @Data
 public class Assignment {
+    @TableId(type = IdType.AUTO)
     private Long assignId;
 
     private String assignName;
@@ -33,4 +36,14 @@ public class Assignment {
     private byte[] content;
 
     private String filename;
+
+    // 0:有效
+    private Integer status;
+
+    private String courseName;
+
+    private String md5;
+    private String url;
+    private String type;
+    private Long size;
 }

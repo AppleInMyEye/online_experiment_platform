@@ -4,6 +4,7 @@ package com.ustc.oep.common;
  * @author YuJianhua
  * @create 2023-03-16 21:14
  */
+import com.ustc.oep.dto.JudgeResultDTO;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -34,6 +35,13 @@ public class R<T> implements Serializable {
         r.code = 0;
         return r;
     }
+    public static <T> R<T> error(T object) {
+        R<T> r = new R<T>();
+        r.data = object;
+        r.code = 0;
+        return r;
+    }
+
 
     public R<T> add(String key, Object value) {
         this.map.put(key, value);

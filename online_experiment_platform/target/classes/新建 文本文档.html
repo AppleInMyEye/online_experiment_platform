@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>WebRTC Example</title>
+	<style>
+		video {
+			width: 50%;
+			height: auto;
+			margin: 0 auto;
+			display: block;
+		}
+	</style>
+</head>
+<body>
+	<h1>WebRTC Example</h1>
+	<video id="local-video" autoplay></video>
+	<video id="remote-video" autoplay></video>
+	<br>
+	<button id="start-btn" onclick="start()">Start</button>
+	<button id="stop-btn" onclick="stop()">Stop</button>
+
+	<script>
+		var localStream, remoteStream;
+		var localVideo = document.getElementById("local-video");
+		var remoteVideo = document.getElementById("remote-video");
+		var startBtn = document.getElementById("start-btn");
+		var stopBtn = document.getElementById("stop-btn");
+
+		// 获取本地媒体流
+		function getLocalStream() {
+			navigator.mediaDevices.getDisplayMedia({
+				audio: true,
+				video: true
+			})
+			.then(function(stream) {
+				localStream = stream;
+				localVideo.srcObject = localStream;
+			})
+			.catch(function(error) {
+				console.log("Get local media stream failed:", error);
+			});
+		}
+
+		// 创建PeerConnection对象
+		var pc = new RTCPeerConnection();
+
+		// 发送本地视频流
+		function sendLocalStream() {
+			localStream.getTracks().forEach(function(track) {
+				var sender = pc.addTrack(track, localStream);
+				sender.send();
+			});
+		}
+
+		// 接收远程视频流
+		pc.ontrack = function(event) {
+			remoteStream = event.streams[0];
+			remoteVideo.srcObject = remoteStream;
+		};
+
+		// 开始视频通话
+		function start() {
+			getLocalStream();
+			pc.createOffer()
+			.then(function(offer) {
+				return pc.setLocalDescription(offer);
+			})
+			.then(function() {
+				sendLocalStream();
+				// 将本地Session描述发送给对方
+				// ...
+			})
+			.catch(function(error) {
+				console.log("Start video call failed:", error);
+			});
+			startBtn.disabled = true;
+			stopBtn.disabled = false;
+		}
+
+		// 结束视频通话
+		function stop() {
+			pc.close();
+			localVideo.srcObject = null;
+			remoteVideo.srcObject = null;
+			startBtn.disabled = false;
+			stopBtn.disabled = true;
+		}
+	</script>
+</body>
+</html>

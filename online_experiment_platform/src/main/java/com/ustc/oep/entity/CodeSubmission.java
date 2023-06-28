@@ -1,7 +1,9 @@
 package com.ustc.oep.entity;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -13,8 +15,9 @@ import java.time.LocalDateTime;
  */
 @Data
 public class CodeSubmission {
-
-    private Long submissionId;
+    @TableId(type = IdType.AUTO)
+    @TableField("submit_id")
+    private Long submitID;
 
     private Integer problemId;
 

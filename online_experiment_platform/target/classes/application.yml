@@ -1,0 +1,43 @@
+server:
+  port: 9090
+  servlet:
+    encoding:
+      charset: UTF-8
+spring:
+  application:
+    #应用名称，可选
+    name: online_experiment_platform
+  datasource:
+    druid:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://localhost:3306/online_experiment_platform?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
+      username: root
+      password: 123456
+  redis:
+    host: localhost
+    port: 6379
+#    password: root@123456
+    database: 0
+  cache:
+    redis:
+      time-to-live: 1800000
+  servlet:
+    multipart:
+      max-file-size: 1000MB
+      max-request-size: 1000MB
+mybatis-plus:
+  configuration:
+    #在映射实体或者属性时，将数据库中表名和字段名中的下划线去掉，按照驼峰命名法映射
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      id-type: ASSIGN_ID
+online-experiment-platform:
+  path: D:\project\online_experiment_platform\src\main\resources\tmp\
+  avatar-path: D:\project\online_experiment_platform\src\main\resources\avatar\
+  assignment-path: D:\project\online_experiment_platform\src\main\resources\assignment\
+  assignment-submit-path: D:\project\online_experiment_platform\src\main\resources\assignment_submit\
+judge-server:
+  host: "192.168.190.128"
+  port: 2345

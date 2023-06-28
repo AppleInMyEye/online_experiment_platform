@@ -20,7 +20,7 @@
     const player = document.querySelector('#player');
     const recordPlayer = document.querySelector('#recordPlayer');
     let blobs = [], mediaRecorder;
-    const ws = new WebSocket('ws://localhost:8080/ws');
+    const ws = new WebSocket('ws://localhost:9090/ws');
     const mediaSource = new MediaSource();
     let mediaSourceBuffer = null;
 
@@ -41,7 +41,7 @@
       player.srcObject = stream;
 
       mediaRecorder = new MediaRecorder(stream, {
-        mimeType: 'video/webm'
+        mimeType: 'video/webm; codecs="vp8'
       });
       mediaRecorder.ondataavailable = (e) => {
         blobs.push(e.data);
@@ -100,9 +100,11 @@
         mediaSource.addEventListener('sourceopen', () => {
           mediaSourceBuffer = mediaSource.addSourceBuffer('video/webm; codecs="vp8"');
         });
-        video.src = URL.createObjectURL(mediaSource);
+        recordPlayer.src = URL.createObjectURL(mediaSource);
       });
+    }
 
   </script>
+</section>
 </body>
 </html>

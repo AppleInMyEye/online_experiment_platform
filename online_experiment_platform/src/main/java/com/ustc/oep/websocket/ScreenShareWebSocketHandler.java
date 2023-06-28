@@ -21,13 +21,14 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 @Component
 @Slf4j
 public class ScreenShareWebSocketHandler extends TextWebSocketHandler {
-    @Value("${online_experiment_platform.path}")
+    @Value("${online-experiment-platform.path}")
     private String bassPath;
 
     private static final int MAX_BinaryMessage_SIZE = 1024 * 1024 * 10;//10M
 
     private final Map<String, WebSocketSession> sessions = new HashMap<>();
 
+    //TODO:将文件url存入数据库
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         log.info("建立websocket连接");

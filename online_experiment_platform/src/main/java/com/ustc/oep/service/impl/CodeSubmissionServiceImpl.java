@@ -1,11 +1,12 @@
 package com.ustc.oep.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ustc.oep.dto.CodeRequest;
 import com.ustc.oep.entity.CodeSubmission;
 import com.ustc.oep.mapper.CodeSubmissionMapper;
 import com.ustc.oep.service.CodeSubmissionService;
+import com.ustc.oep.entity.JudgeResult;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -29,10 +30,12 @@ public class CodeSubmissionServiceImpl extends ServiceImpl<CodeSubmissionMapper,
 
     /**
      * 向判题机发送代码，请求判题
+     *
      * @param codeRequest
+     * @return
      */
     @Override
-    public void codeSubmit(CodeRequest codeRequest) {
+    public JudgeResult codeSubmit(CodeRequest codeRequest) {
         Socket socket = new Socket();
         try {
             socket.connect(new InetSocketAddress(host, port), 1000);
@@ -61,11 +64,15 @@ public class CodeSubmissionServiceImpl extends ServiceImpl<CodeSubmissionMapper,
             byte[] dataBuf = readNBytes(in, dataLength);
             socket.close();
 
+            //将返回数据转换为JudgeResult对象
             String responseData = new String(dataBuf);
             System.out.println(responseData);
+            ObjectMapper objectMapper = new ObjectMapper();
+            return objectMapper.readValue(responseData, JudgeResult.class);
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return null;
     }
 
     @Override

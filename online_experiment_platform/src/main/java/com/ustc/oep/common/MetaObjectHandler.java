@@ -17,7 +17,6 @@ public class MetaObjectHandler implements com.baomidou.mybatisplus.core.handlers
     public void updateFill(MetaObject metaObject) {
         log.info("公共自动填充【update】");
         metaObject.setValue("lastModifiedTime", LocalDateTime.now());
-        metaObject.setValue("updateUser", BaseContext.getCurrentId());
     }
 
     @Override

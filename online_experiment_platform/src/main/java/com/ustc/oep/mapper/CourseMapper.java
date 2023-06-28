@@ -16,4 +16,6 @@ import java.util.List;
 public interface CourseMapper extends BaseMapper<Course> {
     @Select("select * from course natrual join take where take.uid = #{uid}")
     List<Course> selectCourseByUid(@Param("uid") Long uid);
+
+    List<Course> search(String keyword);
 }

@@ -1,0 +1,110 @@
+<html>
+<head>
+  <title>录屏并下载</title>
+</head>
+<meta charset="UTF-8">
+<body>
+<selection>
+  <video autoPlay id="player"></video>
+  <video id="recordPlayer"></video>
+</selection>
+<section>
+  <button id="startScreen">开启录屏</button>
+  <button id="startCamera">开启摄像头</button>
+  <button id="stop">结束</button>
+  <button id="reply">回放</button>
+  <button id="download">下载</button>
+  </selection>
+
+  <script>
+    const player = document.querySelector('#player');
+    const recordPlayer = document.querySelector('#recordPlayer');
+    let blobs = [], mediaRecorder;
+    const ws = new WebSocket('ws://localhost:9090/ws');
+    const mediaSource = new MediaSource();
+    let mediaSourceBuffer = null;
+
+    // 接收来自后端的消息
+    ws.onmessage = (event) => {
+      console.log(`Received message: ${event.data}`);
+    };
+
+    async function record(recordType) {
+      const getMediaMethod = recordType === 'screen' ? 'getDisplayMedia' : 'getUserMedia';
+      const stream = await navigator.mediaDevices[getMediaMethod]({
+        video: {
+          width: 500,
+          height: 300,
+          frameRate: 20
+        }
+      });
+      player.srcObject = stream;
+
+      mediaRecorder = new MediaRecorder(stream, {
+        mimeType: 'video/webm'
+      });
+      mediaRecorder.ondataavailable = (e) => {
+        blobs.push(e.data);
+      };
+      mediaRecorder.start(100);
+    }
+
+    const downloadBtn = document.querySelector('#download');
+    const startScreenBtn = document.querySelector('#startScreen');
+    const startCameraBtn = document.querySelector('#startCamera');
+    const stopBtn = document.querySelector('#stop');
+    const replyBtn = document.querySelector('#reply');
+
+    startScreenBtn.addEventListener('click', () => {
+      record('screen');
+    });
+    startCameraBtn.addEventListener('click', () => {
+      record('camera');
+    });
+
+    stopBtn.addEventListener('click', () => {
+      mediaRecorder && mediaRecorder.stop();
+    });
+
+    replyBtn.addEventListener('click', () => {
+      const blob = new Blob(blobs, {type: 'video/webm'});
+      recordPlayer.src = URL.createObjectURL(blob);
+      recordPlayer.play();
+    });
+
+    download.addEventListener('click', () => {
+      var blob = new Blob(blobs, {type: 'video/webm'});
+      var url = URL.createObjectURL(blob);
+
+      var a = document.createElement('a');
+      a.href = url;
+      a.style.display = 'none';
+      a.download = 'record.webm';
+      a.click();
+    });
+
+    ws.onopen = () => {
+      // 获取媒体流
+      navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
+        const mediaRecorder = new MediaRecorder(stream);
+        mediaRecorder.ondataavailable = (event) => {
+          if (event.data && event.data.size > 0) {
+            if (mediaSourceBuffer !== null && mediaSource.readyState === 'open') {
+              mediaSourceBuffer.appendBuffer(event.data);
+              ws.send(event.data);
+            }
+          }
+        };
+        mediaRecorder.start(1000);
+        player.srcObject = stream;
+        mediaSource.addEventListener('sourceopen', () => {
+          mediaSourceBuffer = mediaSource.addSourceBuffer('video/webm; codecs="vp8"');
+        });
+        video.src = URL.createObjectURL(mediaSource);
+      });
+    }
+
+  </script>
+</section>
+</body>
+</html>

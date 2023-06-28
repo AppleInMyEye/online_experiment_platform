@@ -23,7 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping("/common")
 @Slf4j
 public class CommonController {
-    @Value("${online_experiment_platform.path}")
+    @Value("${online-experiment-platform.path}")
     private String bassPath;
 
     @Autowired
